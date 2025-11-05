@@ -1,6 +1,6 @@
 let promptDefault = "vikas@Vikass-blackbook ";
 let pwd = "Users/vikas";
-let memory = [];
+let memory = [["Users", ["vikas", []]]];
 
 function changeDir(dir) {
   if (dir === "..") {
@@ -10,24 +10,31 @@ function changeDir(dir) {
   }
 }
 
-function findDir(dirName, parentDir){
-  for(let index = 0; index < parentDir.length; index++){
-    if(dirName === parentDir[index][0]){
+function findDir(dirName, parentDir) {
+  for (let index = 0; index < parentDir.length; index++) {
+    if (dirName === parentDir[index][0]) {
       return parentDir[index][1];
     }
   }
 }
 
-function chooseDir(dirsString, parentDir){
-  const childDirs = dirsString.slice(dirsString.indexOf('/'));
-  const dirName = childDirs.slice(0, childDirs.indexOf('/'));
+function chooseDir(path, parentDir) {
+  console.log(path);
+  const dirName = path[0];
   const dir = findDir(dirName, parentDir);
+
+  if (path.length > 1) {
+    path.shift();
+    return chooseDir(path, dir);
+  }
+  return dir;
 }
 
-function makeDir(dirName){
+function makeDir(dirName) {
   const makeFolder = [dirName, []];
-  const parentDir = chooseDir(pwd, memory);
-  chooseDir.push(makeFolder);
+  const path = pwd.split("/");
+  const parentDir = chooseDir(path, memory);
+  parentDir.push(makeFolder);
 }
 
 function commandChoose(tokens) {
@@ -39,7 +46,7 @@ function commandChoose(tokens) {
       return;
     }
     case "mkdir":
-      return makeDir(tokens [1]);
+      return makeDir(tokens[1]);
   }
 }
 
@@ -57,3 +64,6 @@ function shell() {
 }
 
 shell();
+
+
+console.log(memory);
